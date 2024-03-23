@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'cancel' => 'Huỷ',
+    'submit' => 'Thêm',
+    'update' => 'Cập nhật',
+    'cannot_save' => 'Đã có lỗi, vui lòng thử lại sau',
+    // Customer
+    'customers' => 'Khách hàng',
+    'add-customer' => 'Thêm khách hàng',
+    // Customer
+    'groups' => 'Nhóm',
+    'add-group' => 'Thêm nhóm',
+    'quantity' => 'Số lượng',
+    'status' => 'Trạng thái',
+    'discount' => 'Chiết khấu',
+    'product_category' => 'Danh mục sản phẩm',
+    'no_data_found' => 'Không có dữ liệu khả dụng',
+    'selected_products' => 'Sản phẩm đã chọn',
+    'product_quantity_not_enough' => 'Số lượng sản phẩm không đủ',
+    'general_info' => 'Thông tin chung',
+    'index' => 'STT',
+    'sku' => 'Mã sản phẩm',
+    'name' => 'Tên',
+    'amount' => 'Số tiền',
+    'contact' => 'Liên hệ',
+    'featured_image' => 'Logo',
+    'delete_confirming' => 'Bạn có chắc muốn xoá không ?',
+    'adding_related_product' => 'Thêm sản phẩm con',
+    'new' => 'Mới',
+    'warranty' => 'Bảo hành',
+    'price' => 'Giá',
+    'save_for_next_time' => 'Lưu cho lần sử dụng sau',
+    'products' => 'Sản phẩm',
+    'cannot_delete_payment' => 'Không thể xoá thanh toán',
+    'unit' => 'Đơn vị',
+    'cod_order_exists' => 'Đã có mã vận đơn cho đơn hàng này.',
+    'product_attribute' => 'Thuộc tính sản phẩm',
+    'cannot_delete_processing_order' => 'Đơn hàng đang xử lý không thể xoá',
+    'request_warranty_histories' => 'Lịch sử',
+    'type' => 'Kiểu',
+    'fetured_image' => 'Ảnh sản phẩm'
+];

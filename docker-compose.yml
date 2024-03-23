@@ -1,0 +1,77 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: digitalocean.com/php
+    container_name: finance_app
+    volumes:
+      - "nfsmount:/var/www"
+      - ./dockers/php/local.ini:/usr/local/etc/php/conf.d/local.ini
+      - ./dockers/php/pood.d/www2.conf:/usr/local/etc/php-fpm.d/www2.conf
+    restart: unless-stopped
+    tty: true
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+    networks:
+      - finance-network
+
+    #Nginx Service
+  webserver:
+    image: nginx:alpine
+    volumes:
+      - ./:/var/www
+      - ./dockers/nginx/conf.d/:/etc/nginx/conf.d/
+    container_name: webserver
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - finance-network
+
+  #MySQL Service
+  db:
+    image: mariadb
+    volumes:
+      - ./dockers/mysql/dbdata:/var/lib/mysql
+      - ./dockers/mysql/my.cnf:/etc/mysql/my.cnf
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: finance
+      MYSQL_ROOT_PASSWORD: finance
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    networks:
+      - finance-network
+  redis:
+    image: redis:6.0.3
+    container_name: redis
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "6379:6379"
+    environment:
+      SERVICE_NAME: redis
+      SERVICE_TAGS: dev
+    networks:
+      - finance-network
+#Docker Networks
+networks:
+  finance-network:
+    driver: bridge
+volumes:
+  nfsmount:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":/System/Volumes/Data/${PWD}"

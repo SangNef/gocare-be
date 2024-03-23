@@ -1,0 +1,202 @@
+#relation_products {
+    border:  1px solid #d2d6de;
+    padding: 10px;
+}
+
+#product-list {
+    padding-top: 10px;
+}
+.product-item {
+    text-align: center;
+    display: inline-block;
+    width: 170px;
+    min-height: 170px;
+    border: 1px solid #d2d6de;
+    overflow: hidden;
+    position: relative;
+}
+.product-quantity {
+    position: absolute;
+    right: 0;
+}
+.product-item.adding {
+    opacity: 0.4;
+    cursor: default !important;
+}
+.product-item p {
+    margin-bottom: 0;
+}
+
+.product-item:hover {
+    cursor: pointer;
+    border: 1px solid #10cfbd;
+}
+.selected-product {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #d2d6de;
+}
+.selected-product .card-body {
+    position: relative;
+}
+.selected-product .card-body button {
+    position: absolute;
+    right: -15px;
+    top: -10px;
+    border: none;
+}
+
+.selected-product .card-body button span {
+    font-weight: bold;
+    color: #f55753;
+}
+.selected-product label {
+    margin-top: 6px;
+}
+.mr-1 {
+    margin-right: 10px;
+}
+#selected_products {
+    min-height: 200px;
+    overflow-y: auto;
+}
+.order-product-input input,
+.order-product-input label{
+    display: inline-block;
+}
+.order-product-input .quantity {
+    width: 40px;
+}
+.order-product-input .price {
+    width: 80px;
+}
+.selected-product td {
+    padding: 2px;
+}
+.selected-product table input[type="text"] {
+    height: 26px;
+    padding: 0 12px;
+}
+.selected-product label.small {
+    font-weight: normal;
+    font-size: 11px;
+}
+.selected-product .order-product-note {
+    display: inline-block;
+    vertical-align: middle;
+}
+.selected-product .discount-input {
+    display: inline-block;
+}
+.selected-product .discount-input:after {
+    content: "%";
+}
+.modal-90 {
+    width: 90%;
+}
+.modal-70 {
+    width: 70%;
+}
+.order-selected-product input {
+    border: none;
+    padding: 5px 0px;
+    text-align: right;
+}
+/*@media (min-width: 992px) {*/
+/*    .modal-90 {*/
+/*        width: 90%;*/
+/*    }*/
+/*}*/
+.payment-detail .datepicker {
+    padding: 3px;
+}
+.currency {
+    text-align: right;
+}
+.dollar-icon {
+    border-radius: 50%;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    width: 35px;
+    height: 35px;
+    float: left;
+    background: #FFF;
+    text-align: center;
+    text-shadow: 1px 1px 6px #48b0f7;
+}
+.dollar-icon i {
+    font-size: 22px;
+    margin-top: 4px;
+    text-align: center;
+}
+#draft_order_input .input-group-btn {
+    padding-left: 10px;
+    vertical-align: bottom
+}
+#draft_order_input .input-group-btn button {
+    padding: 5px 8px;
+    border-radius: 4px
+}
+.select2-search input {
+    color: black !important;
+}
+@media print {
+    .page-break {
+        display:block; 
+        page-break-before:always;
+        padding: 0 !important;
+    }
+}
+.col-discount input,
+.col-number_of_products input,
+.col-type select {
+    width: 100% !important;
+}
+
+.border {
+    border: 1px solid #EEEEEE;
+}
+.border-primary {
+    border: 1px solid #48b0f7;
+}
+.p-1 {
+    padding: 2px;
+}
+
+.profile2 .actions .btn {
+    border-radius: 3px !important;
+    width: 100px !important;
+}
+
+#AddSeri table td {
+    cursor: pointer;
+}
+
+.widget-user-username {
+    color: #FFF;font-weight: 600 !important;font-size: 30px !important;
+}
+.widget-user-desc {
+    color: #FFF;font-weight: 500 !important;font-size: 22px !important;
+}
+.card {
+    box-shadow: 0 0 1px rgba(0,0,0,.125), 0 1px 3px rgba(0,0,0,.2);
+    margin-bottom: 1rem;
+}
+.dash-product{background: #FFF; height: 400px;}
+.loading-spinner{
+    width:30px;
+    height:30px;
+    border:2px solid indigo;
+    border-radius:50%;
+    border-top-color:#0001;
+    display:inline-block;
+    animation:loadingspinner .7s linear infinite;
+}
+@keyframes loadingspinner{
+    0%{
+        transform:rotate(0deg)
+    }
+    100%{
+        transform:rotate(360deg)
+    }
+}
