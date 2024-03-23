@@ -950,85 +950,45 @@ class OrderController extends Controller
         }
     }
 
-    public function initPayment(Request $request)
+    public function initPayment(InitPaymentRequest $request): JsonResponse
     {
-        $this->validate($request, [
-            'payment' => 'required',
-            'seri_numbers' => 'required'
-        ]);
-
-        // Tiến hành tạo lịch sử thanh toán
-        $seris = ProductSeri::whereIn('seri_number', explode(',', $request->seri_numbers))->get();
-        $total = 0;
-        foreach ($seris as $seri) {
-            $product = Product::find($seri->product_id);
-            $total += $product->retail_price;
-        }
-
-        
-        // Kiểm tra phương thức thanh toán và tiến hành thực hiện
-        if ($request->payment == 'Viettel') {
+        // TODO: Optimize code
+        return DBFacade::transaction(function () use ($request): JsonResponse {
             try {
-                $viettelSv = app(ViettelMoneyService::class);
-                
-                // Gọi hàm processPayments để kiểm tra trạng thái thanh toán
-                $response = $this->processPayments($request);
-                
-                // Nếu thanh toán thành công, trả về redirect
-                if ($response['status'] == 1 && $response['vnp_ResponseCode'] == '00') {
-                    // Tạo bản ghi lịch sử thanh toán
-                    $paymentHistory = PaymentHistory::create([
-                        'provider' => $request->payment,
-                        'request' => json_encode([
-                            'seri_numbers' => $request->seri_numbers,
-                            'total' => $total
-                            ])
-                        ]);
-                        $redirect = $viettelSv->createRedirectLinkForOrder([
-                            'order_id' => $paymentHistory->id,
-                            'trans_amount' => (int) $total,
-                            'return_url' => config('app.fe_url') . '/quan-ly-ma-kich-hoat/',
-                        ]);
-                    return response()->json([
-                        'redirect_to' => $redirect
-                    ]);
-                }
-            } catch (\Exception $exception) {
-                \Log::error($exception->getMessage());
-                \Log::error($exception->getTraceAsString());
-            }
-        } elseif ($request->payment == 'Vnpay') {
-            try {
-                
-                // Nếu thanh toán thành công, trả về redirect
-                $response = $this->processPayments($request);
-                if ($response['status'] == 1 && $response['vnp_ResponseCode'] == '00') {
-                    $paymentHistory = PaymentHistory::create([
-                        'provider' => $request->payment,
-                        'request' => json_encode([
-                            'seri_numbers' => $request->seri_numbers,
-                            'total' => $total
-                            ])
-                        ]);
-                        $data = ['total' => $total, 'code' => $paymentHistory->id];
-                        //$paymentHistory->save();
-                        $payment = app(VnpayService::class);
-                        $link = $payment->createRedirectLinkSeri($data);
-                    return response()->json([
-                        'redirect_to' => $link
-                    ]);
-                }
-            } catch (\Exception $exception) {
-                \Log::error($exception->getMessage());
-                \Log::error($exception->getTraceAsString());
-            }
-        }
+                // update product seri
+                $updateProductSeriData = $request->only(['name', 'phone', 'email', 'province', 'district', 'ward', 'address']);
+                $updateProductSeriData['activated_at'] = \Carbon\Carbon::now();
+                ProductSeri::query()->whereIn('id', data_get($request, 'ids'))->update($updateProductSeriData);
 
-        return response()->json([
-            'message' => [
-                'payment' => ['Có lỗi xảy ra, vui lòng liên hệ admin']
-            ]
-        ], 422);
+                // tạo mới paymenthistories
+                $seriNumbers = data_get($request, 'seri_numbers');
+                $seriNumbersArray = explode(',', $seriNumbers);
+                $total = (int)ProductSeri::query()
+                    ->whereIn('seri_number', $seriNumbersArray)
+                    ->join('products', 'products.id', '=', 'product_series.product_id')
+                    ->sum('retail_price');
+
+                $provider = data_get($request, 'payment');
+                $paymentHistory = PaymentHistory::create([
+                    'provider' => $provider,
+                    'request' => json_encode([
+                        'seri_numbers' => $seriNumbers,
+                        'total' => $total
+                    ])
+                ]);
+
+                $method = "handlePayment{$provider}";
+                return $this->{$method}($paymentHistory, $total);
+            } catch (\Exception $e) {
+                \Log::error($e->getMessage());
+                \Log::error($e->getTraceAsString());
+                return response()->json([
+                    'message' => [
+                        'payment' => ['Có lỗi xảy ra, vui lòng liên hệ admin']
+                    ]
+                ], 400);
+            }
+        });
     }
 
     private function handlePayment($paymentMethod)
